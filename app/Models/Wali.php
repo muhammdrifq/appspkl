@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Wali extends Model
+{
+    use HasFactory;
+    public $fillable = ['nama', 'foto', 'id_siswa'];
+    public $timestamp = true;
+
+    // Membuat relasi one to one di model
+    public function siswa()
+    {
+        // Data dari model 'Wali' bisa dimiliki oleh model 'Siswa'
+        // melalui 'id_siswa'
+        return $this->belongsTo(Siswa::class, 'id_siswa');
+    }
+
+    // Method menampilkan image
+    public function image ()
+    {
+        if ($this->foto && file_exists(public_path('images/wali/' . $this->photo))){
+            return asset('images/wali/' . $this->photo);
+        }
+        else {
+            return asset('images/no_image.jpg');
+        }
+    }
+
+    // Menghapus foto di storage(penyimpanan) public
+    public function deleteImage ()
+    {
+        if ($this->foto && file_exists(public_path('images/wali/' . $this->foto))) {
+            return unlink(public_path('images/wali/' . $this->foto));
+        }
+    }
+}
